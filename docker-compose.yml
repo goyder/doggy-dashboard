@@ -1,0 +1,14 @@
+version: '2'
+
+
+services:
+  grafana:
+    image: grafana/grafana-oss:9.1.6
+    ports:
+      - 3000:3000
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-googlesheets-datasource
+    volumes:
+      - type: bind
+        source: ./graf-storage
+        target: /var/lib/grafana
