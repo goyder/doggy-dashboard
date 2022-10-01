@@ -1,5 +1,3 @@
-# Editable install with no version control (dogdash==0.0.0)
--e /Users/Goyder/Projects/doggy-dashboard/src
 alembic==1.8.1
 boto3==1.24.82
 botocore==1.27.82
@@ -14,3 +12,6 @@ s3transfer==0.6.0
 six==1.16.0
 SQLAlchemy==1.4.41
 urllib3==1.26.12
+google-api-python-client 
+google-auth-httplib2 
+google-auth-oauthlib

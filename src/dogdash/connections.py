@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 import json
 import os
 
+
 def get_secret(secret_name, region_name):
     # Create a Secrets Manager client
     session = boto3.session.Session()
