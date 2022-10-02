@@ -31,6 +31,9 @@ def clean_spreadsheet(
     date_override_column: Optional[str] = None,
     time_override_column: Optional[str] = None
 ) -> pd.DataFrame:
+    """
+    Rename columns, handle datetimes.
+    """
     if column_renamings:
         df = df.rename(columns=column_renamings)
 
