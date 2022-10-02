@@ -20,4 +20,5 @@ def test_sheet_retrieval(sheet_name: str):
         worksheet_name=sheet_name,
         service_credentials=GOOGLE_APPLICATION_CREDENTIALS
     )
+    df = df.replace("", None)
     assert type(df) == pd.DataFrame
