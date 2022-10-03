@@ -4,7 +4,7 @@ import os
 from googleapiclient.errors import HttpError
 import gspread as gs
 import pandas as pd
-from typing import Optional
+from typing import Optional, Iterable
 import numpy as np
 
 
@@ -29,7 +29,8 @@ def clean_spreadsheet(
     datetime_column: Optional[str] = None,
     datetime_format: Optional[str] = None,
     date_override_column: Optional[str] = None,
-    time_override_column: Optional[str] = None
+    time_override_column: Optional[str] = None,
+    binary_columns: Optional[Iterable[str]] = None
 ) -> pd.DataFrame:
     """
     Rename columns, handle datetimes.
@@ -69,5 +70,13 @@ def clean_spreadsheet(
         df[datetime_column] = pd.to_datetime(
             df[datetime_column].dt.date.astype(str) + " " + df[time_override_column].astype(str)
         )
+
+    if binary_columns:
+        for binary_column in binary_columns:
+            df[binary_column] = df[binary_column].map({
+                "TRUE": True, 
+                "FALSE": False
+                }
+            )
 
     return df

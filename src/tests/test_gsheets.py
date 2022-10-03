@@ -8,6 +8,7 @@ def test_df():
     return pd.DataFrame({
         "A": ["1", "2", "3"],
         "B": ["4", "5", "6"],
+        "C": ["TRUE", "FALSE", "TRUE"],
         "datetime": [
             "18/09/2022 23:00:00",
             "19/09/2022 03:00:00",
@@ -28,7 +29,8 @@ def test_df():
 def test_rename_columns(test_df):
     column_renamings = {
         "A": "a",
-        "B": "b"
+        "B": "b",
+        "C": "c"
     }   
     df = gsheets.clean_spreadsheet(
         test_df,
@@ -42,7 +44,9 @@ def test_rename_columns(test_df):
 def test_set_column_typing(test_df):
     column_typing = {
         "A": int,
-        "B": int    }
+        "B": int,
+        "C": bool    
+        }
     df = gsheets.clean_spreadsheet(
         test_df,
         column_typing=column_typing,
@@ -88,3 +92,12 @@ def test_date_and_time_overriding(test_df):
 
     assert (df["datetime"].dt.time.astype(str) == ["00:00:00", "03:00:00", "13:00:00"]).all()
     assert (df["datetime"].dt.date == [pd.to_datetime(date_str) for date_str in ["2022-12-25", "2022-09-19", "2022-09-19"]]).all()
+
+
+def test_binary_transformation(test_df):
+    df = gsheets.clean_spreadsheet(
+        test_df,
+        binary_columns=["C"],
+    )
+
+    assert (df["C"] == [True, False, True]).all()
