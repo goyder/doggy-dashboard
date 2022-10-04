@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from dogdash.connect import get_secret
+from dogdash.connections import get_secret
 import os
 
 # this is the Alembic Config object, which provides

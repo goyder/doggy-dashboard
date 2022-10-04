@@ -1,4 +1,4 @@
-from dogdash.connect import get_secret
+from dogdash.connections import get_secret
 import mysql.connector
 import os
 
