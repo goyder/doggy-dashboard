@@ -32,6 +32,7 @@ def clean_spreadsheet(
     date_override_column: Optional[str] = None,
     time_override_column: Optional[str] = None,
     binary_columns: Optional[Iterable[str]] = None,
+    columns_to_keep: Optional[Iterable[str]] = None,
     **kwargs
 ) -> pd.DataFrame:
     """
@@ -81,5 +82,8 @@ def clean_spreadsheet(
                 "FALSE": False
                 }
             )
+
+    if columns_to_keep:
+        df = df[columns_to_keep]
 
     return df

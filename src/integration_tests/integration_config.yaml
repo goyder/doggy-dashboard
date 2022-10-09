@@ -9,14 +9,24 @@ spreadsheets:
             Timestamp: datetime
             Date?: date
             Time?: time
+            On the pee pad?: peepad
+            Comments: comments
         binary_columns:
             - pee
             - poo
             - accident
+            - peepad
         time_override_column: time
         date_override_column: date
         datetime_column: datetime
         datetime_format: "%d/%m/%Y %H:%M:%S"
+        columns_to_keep: 
+            - pee
+            - poo
+            - accident
+            - datetime
+            - peepad
+            - comments
     - 
         spreadsheet_id: 1M36WfE5KBno3iC5x2qr0jUU0KjkUwHOVVNohRi_LmK8
         worksheet_name: Poop tracking
@@ -31,3 +41,8 @@ spreadsheets:
             - accident
         datetime_column: datetime
         datetime_format: "%d/%m/%Y %H:%M:%S"
+        columns_to_keep: 
+            - pee
+            - poo
+            - accident
+            - datetime

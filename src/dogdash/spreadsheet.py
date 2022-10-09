@@ -5,6 +5,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional, Iterable
 import pandas as pd
 import boto3
+from sqlalchemy.engine import Engine
 
 ssm_client = boto3.client("ssm")
 
@@ -20,6 +21,7 @@ class GooglesheetsSpreadsheetConfig:
     date_override_column: Optional[str]
     time_override_column: Optional[str]
     binary_columns: Optional[Iterable[str]]
+    columns_to_keep: Optional[Iterable[str]]
 
 
 class Configuration:
@@ -60,7 +62,8 @@ class Configuration:
                     datetime_format=config.get("datetime_format", None),
                     date_override_column=config.get("date_override_column", None),
                     time_override_column=config.get("time_override_column", None),
-                    binary_columns=config.get("binary_columns", None)
+                    binary_columns=config.get("binary_columns", None),
+                    columns_to_keep=config.get("columns_to_keep", None)
                 )
             )
         self.spreadsheet_configs = configs
@@ -86,4 +89,11 @@ class Spreadsheet:
             self.dfs.append(df)
         self.df_total = pd.concat(self.dfs)
         self.df_total.sort_values("datetime", ascending=True, inplace=True)
+        self.df_total = self.df_total.reset_index(drop=True)
         
+    def write_to_sql(self, table_name: str, sql_engine: Engine, **kwargs):
+        self.df_total.to_sql(
+            table_name,
+            sql_engine,
+            **kwargs
+        )

@@ -1,9 +1,15 @@
 import mysql.connector
 import boto3
 import base64
+from sqlalchemy import create_engine
 from botocore.exceptions import ClientError
 import json
 import os
+
+
+secret_name = os.environ["DB_CREDENTIALS_SECRET"]
+region_name = os.environ["REGION"]
+database_name = os.environ["DATABASE_NAME"]
 
 
 def get_secret(secret_name, region_name):
@@ -53,6 +59,24 @@ def get_secret(secret_name, region_name):
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
             
     return secret
+
+
+def create_sqlalchemy_engine(
+    database_name=database_name, 
+    secret_name=secret_name, 
+    region_name=region_name):
+    secret = get_secret(
+        secret_name=secret_name, 
+        region_name=region_name
+    )
+    url = "mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}".format(
+        DB_USER=secret["username"],
+        DB_PASS=secret["password"],
+        DB_HOST=secret["host"],
+        DB_NAME=database_name
+    )
+    engine = create_engine(url=url)
+    return engine
 
 
 if __name__ == "__main__":

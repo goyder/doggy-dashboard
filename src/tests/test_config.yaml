@@ -14,6 +14,9 @@ spreadsheets:
         time_override_column: time_override
         date_override_column: date_override
         datetime_format: "%d/%m/%Y %H:%M:%S"
+        columns_to_keep: 
+          - a
+          - b
     -
         spreadsheet_id: 678910fghij
         worksheet_name: worksheet2

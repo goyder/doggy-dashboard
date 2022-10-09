@@ -78,3 +78,11 @@ def test_binary_transformation(test_df):
     )
 
     assert (df["C"] == [True, False, True]).all()
+
+
+def test_drop_columns(test_df):
+    df = gsheets.clean_spreadsheet(
+        test_df,
+        columns_to_keep=["B", "C"]
+    )
+    assert set(df.columns.to_list()) == set(["B", "C"])
