@@ -4,6 +4,9 @@ from typing import IO
 from dataclasses import dataclass, asdict
 from typing import Optional, Iterable
 import pandas as pd
+import boto3
+
+ssm_client = boto3.client("ssm")
 
 
 @dataclass
@@ -33,6 +36,15 @@ class Configuration:
     def from_yaml_file(cls, yaml_file_path: str): 
         with open(yaml_file_path, 'r') as f:
             raw_config = yaml.safe_load(f)
+        return cls(raw_config)
+
+    @classmethod
+    def from_parameter_store(cls, parameter_name: str):
+        response = ssm_client.get_parameter(
+            Name=parameter_name
+        )
+        raw_config_string = response["Parameter"]["Value"]
+        raw_config = yaml.safe_load(raw_config_string)
         return cls(raw_config)
 
     def _convert_config_objects(self, raw_config: dict):

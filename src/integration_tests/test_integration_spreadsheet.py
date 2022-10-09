@@ -1,4 +1,4 @@
-import dogdash.config 
+import dogdash.spreadsheet 
 import pytest
 import os 
 
@@ -14,8 +14,8 @@ def test_configuration_execution():
 
     credentials = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-    config = dogdash.config.Configuration.from_yaml_file(config_file_path)
-    spreadsheet = dogdash.config.Spreadsheet(credentials, config=config)
+    config = dogdash.spreadsheet.Configuration.from_yaml_file(config_file_path)
+    spreadsheet = dogdash.spreadsheet.Spreadsheet(credentials, config=config)
     spreadsheet.assemble_spreadsheets()
 
     df = spreadsheet.df_total

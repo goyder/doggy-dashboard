@@ -1,5 +1,6 @@
+from random import sample
 import dogdash.gsheets
-import dogdash.config
+import dogdash.spreadsheet
 import pandas as pd
 from tests.fixtures import test_df, sample_config
 from pytest_mock.plugin import MockerFixture
@@ -13,7 +14,7 @@ config_file_path = os.path.join(dir_path, config_file_name)
 
 def test_config_read_from_text(sample_config):
     # Pass in our config
-    config = dogdash.config.Configuration.from_text(sample_config)
+    config = dogdash.spreadsheet.Configuration.from_text(sample_config)
 
     assert config.raw_config["spreadsheets"][0]["spreadsheet_id"] == "12345abcde"
     assert config.spreadsheet_configs[0].spreadsheet_id == "12345abcde"
@@ -22,7 +23,25 @@ def test_config_read_from_text(sample_config):
 
 def test_config_read_from_file():
     # Pass in our config
-    config = dogdash.config.Configuration.from_yaml_file(config_file_path)
+    config = dogdash.spreadsheet.Configuration.from_yaml_file(config_file_path)
+
+    assert config.raw_config["spreadsheets"][0]["spreadsheet_id"] == "12345abcde"
+    assert config.spreadsheet_configs[0].spreadsheet_id == "12345abcde"
+    assert config.spreadsheet_configs[1].spreadsheet_id == "678910fghij"
+
+
+def test_config_read_from_parameter_store(mocker: MockerFixture, sample_config):
+    mocked_parameter_store_retrieval = mocker.patch(
+        "dogdash.spreadsheet.ssm_client.get_parameter",
+        return_value={
+            "Parameter": {
+                "Name": "parameter_name",
+                "Value": sample_config
+            }
+        }
+    )
+    
+    config = dogdash.spreadsheet.Configuration.from_parameter_store("/sample/configuration_location")
 
     assert config.raw_config["spreadsheets"][0]["spreadsheet_id"] == "12345abcde"
     assert config.spreadsheet_configs[0].spreadsheet_id == "12345abcde"
@@ -40,8 +59,8 @@ def test_spreadsheet_call(mocker: MockerFixture, test_df, sample_config):
         return_value=test_df)
 
     # Pass in our config
-    config = dogdash.config.Configuration.from_text(sample_config)
-    spreadsheet = dogdash.config.Spreadsheet(
+    config = dogdash.spreadsheet.Configuration.from_text(sample_config)
+    spreadsheet = dogdash.spreadsheet.Spreadsheet(
         google_credential_filepath="nah",
         config=config
     )
@@ -52,4 +71,4 @@ def test_spreadsheet_call(mocker: MockerFixture, test_df, sample_config):
 
 
 def test_create_stream_from_config_file():
-    config = dogdash.config.Configuration.from_yaml_file(config_file_path)
+    config = dogdash.spreadsheet.Configuration.from_yaml_file(config_file_path)
