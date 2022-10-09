@@ -1,30 +1,7 @@
 import dogdash.gsheets as gsheets
 import pytest
 import pandas as pd
-
-
-@pytest.fixture
-def test_df():
-    return pd.DataFrame({
-        "A": ["1", "2", "3"],
-        "B": ["4", "5", "6"],
-        "C": ["TRUE", "FALSE", "TRUE"],
-        "datetime": [
-            "18/09/2022 23:00:00",
-            "19/09/2022 03:00:00",
-            "19/09/2022 06:15:00"],
-        "date_override": [
-            "25/12/2022",
-            None,
-            None
-        ],
-        "time_override": [
-            "00:00:00",
-            None,
-            "13:00:00"
-        ]
-    })
-
+from tests.fixtures import test_df
 
 def test_rename_columns(test_df):
     column_renamings = {

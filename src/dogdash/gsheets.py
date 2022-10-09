@@ -19,6 +19,7 @@ def load_spreadsheet(
     sh = gc.open_by_key(spreadsheet_id)
     ws = sh.worksheet(worksheet_name)
     df = pd.DataFrame(ws.get_all_records())
+    df = df.replace("", None)
     return df
 
 
@@ -30,7 +31,8 @@ def clean_spreadsheet(
     datetime_format: Optional[str] = None,
     date_override_column: Optional[str] = None,
     time_override_column: Optional[str] = None,
-    binary_columns: Optional[Iterable[str]] = None
+    binary_columns: Optional[Iterable[str]] = None,
+    **kwargs
 ) -> pd.DataFrame:
     """
     Rename columns, handle datetimes.
@@ -48,14 +50,15 @@ def clean_spreadsheet(
             )
 
     if date_override_column:
-        df[date_override_column] = (
-            pd.to_datetime(
-                np.where(
-                    df[date_override_column].isna(), 
-                    df[datetime_column].dt.date,
-                    df[date_override_column])
-            )
-        )
+        df[date_override_column] = pd.to_datetime(
+            df[date_override_column],
+            format="%d/%m/%Y"
+        ).dt.date
+        df[date_override_column] = pd.to_datetime(np.where(
+                df[date_override_column].isna(), 
+                df[datetime_column].dt.date,
+                df[date_override_column]
+            ))
         df[datetime_column] = pd.to_datetime(
             df[date_override_column].dt.date.astype(str) + " " + df[datetime_column].dt.time.astype(str)
         )

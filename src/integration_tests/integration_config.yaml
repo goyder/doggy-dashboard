@@ -1,0 +1,33 @@
+spreadsheets:
+    - 
+        spreadsheet_id: 1M36WfE5KBno3iC5x2qr0jUU0KjkUwHOVVNohRi_LmK8
+        worksheet_name: Poop responses from form
+        column_renamings:
+            Pee?: pee
+            Poo?: poo
+            Accident?: accident 
+            Timestamp: datetime
+            Date?: date
+            Time?: time
+        binary_columns:
+            - pee
+            - poo
+            - accident
+        time_override_column: time
+        date_override_column: date
+        datetime_column: datetime
+        datetime_format: "%d/%m/%Y %H:%M:%S"
+    - 
+        spreadsheet_id: 1M36WfE5KBno3iC5x2qr0jUU0KjkUwHOVVNohRi_LmK8
+        worksheet_name: Poop tracking
+        column_renamings:
+            Pee: pee
+            Poo: poo
+            Accident: accident 
+            Datetime: datetime
+        binary_columns:
+            - pee
+            - poo
+            - accident
+        datetime_column: datetime
+        datetime_format: "%d/%m/%Y %H:%M:%S"
