@@ -7,7 +7,7 @@ import pandas as pd
 
 
 @dataclass
-class SpreadsheetConfig:
+class GooglesheetsSpreadsheetConfig:
     spreadsheet_id: str
     worksheet_name: str
     column_renamings: Optional[dict]
@@ -39,7 +39,7 @@ class Configuration:
         configs = []
         for config in raw_config.get("spreadsheets", []):
             configs.append(
-                SpreadsheetConfig(
+                GooglesheetsSpreadsheetConfig(
                     spreadsheet_id=config.get("spreadsheet_id", None),
                     worksheet_name=config.get("worksheet_name", None),
                     column_renamings=config.get("column_renamings", None),
