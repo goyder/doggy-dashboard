@@ -5,6 +5,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional, Iterable
 import pandas as pd
 
+
 @dataclass
 class SpreadsheetConfig:
     spreadsheet_id: str
@@ -18,14 +19,23 @@ class SpreadsheetConfig:
     binary_columns: Optional[Iterable[str]]
 
 
-class SpreadsheetManagers:
-    def __init__(self, google_credential_filepath: str, config_file: IO):
-        self.raw_config = yaml.safe_load(config_file)
-        self.configs = self._convert_config_objects(self.raw_config)
-        self.google_credential_filepath = google_credential_filepath
+class Configuration:
+    def __init__(self, raw_config):
+        self.raw_config = raw_config
+        self._convert_config_objects(raw_config)
 
-    @staticmethod
-    def _convert_config_objects(raw_config: dict) -> Iterable[SpreadsheetConfig]:
+    @classmethod
+    def from_text(cls, raw_config_string: str):
+        raw_config = yaml.safe_load(raw_config_string)
+        return cls(raw_config)
+
+    @classmethod
+    def from_yaml_file(cls, yaml_file_path: str): 
+        with open(yaml_file_path, 'r') as f:
+            raw_config = yaml.safe_load(f)
+        return cls(raw_config)
+
+    def _convert_config_objects(self, raw_config: dict):
         configs = []
         for config in raw_config.get("spreadsheets", []):
             configs.append(
@@ -41,20 +51,25 @@ class SpreadsheetManagers:
                     binary_columns=config.get("binary_columns", None)
                 )
             )
-        return configs
+        self.spreadsheet_configs = configs
+        
+
+class Spreadsheet:
+    def __init__(self, google_credential_filepath: str, config: Configuration):
+        self.config = config
+        self.google_credential_filepath = google_credential_filepath
 
     def assemble_spreadsheets(self):
         self.dfs = []
-        for config in self.configs:
+        for spreadsheet_config in self.config.spreadsheet_configs:
             df = dogdash.gsheets.load_spreadsheet(
-                config.spreadsheet_id,
-                config.worksheet_name,
+                spreadsheet_config.spreadsheet_id,
+                spreadsheet_config.worksheet_name,
                 self.google_credential_filepath,
-
             )
             df = dogdash.gsheets.clean_spreadsheet(
                 df,
-                **asdict(config)
+                **asdict(spreadsheet_config)
             )
             self.dfs.append(df)
         self.df_total = pd.concat(self.dfs)

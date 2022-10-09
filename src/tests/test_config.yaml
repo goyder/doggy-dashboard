@@ -1,0 +1,19 @@
+spreadsheets:
+    - 
+        spreadsheet_id: 12345abcde
+        worksheet_name: worksheet1
+        column_renamings:
+            A: a
+            B: b
+            C: c
+        column_typing:
+            A: str
+            B: str
+        binary_columns:
+            - C
+        time_override_column: time_override
+        date_override_column: date_override
+        datetime_format: "%d/%m/%Y %H:%M:%S"
+    -
+        spreadsheet_id: 678910fghij
+        worksheet_name: worksheet2
