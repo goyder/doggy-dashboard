@@ -1,7 +1,3 @@
-import google.auth
-from googleapiclient.discovery import build
-import os
-from googleapiclient.errors import HttpError
 import gspread as gs
 import pandas as pd
 from typing import Optional, Iterable

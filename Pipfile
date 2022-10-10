@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+pytest = "*"
+pyyaml = "*"
+pandas = "*"
+boto3 = "*"
+alembic = "*"
+sqlalchemy = "*"
+pytest-mock = "*"
+pymysql = "*"
+gspread = "*"
+dogdash = {editable = true, path = "."}
+
+[requires]
+python_version = "3.9"

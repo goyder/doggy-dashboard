@@ -1,10 +1,10 @@
-import mysql.connector
 import boto3
 import base64
 from sqlalchemy import create_engine
 from botocore.exceptions import ClientError
 import json
 import os
+import tempfile
 
 
 secret_name = os.environ["DB_CREDENTIALS_SECRET"]
@@ -61,6 +61,14 @@ def get_secret(secret_name, region_name):
     return secret
 
 
+def secret_to_file(secret_name, region_name) -> str:
+    secret = get_secret(secret_name, region_name)
+    with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
+        json.dump(secret, f)
+        credentials_filepath = f.name
+    return credentials_filepath
+
+
 def create_sqlalchemy_engine(
     database_name=database_name, 
     secret_name=secret_name, 
@@ -77,15 +85,3 @@ def create_sqlalchemy_engine(
     )
     engine = create_engine(url=url)
     return engine
-
-
-if __name__ == "__main__":
-    secret_name = os.environ["DB_CREDENTIALS_SECRET"]
-    region_name = os.environ["REGION"]
-    database_name = os.environ["DATABASE_NAME"]
-    secret = get_secret(secret_name=secret_name, region_name=region_name)
-    cnx = mysql.connector.connect(
-        user=secret["username"],
-        password=secret["password"],
-        host=secret["host"],
-    )
